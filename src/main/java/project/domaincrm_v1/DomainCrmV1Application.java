@@ -23,7 +23,7 @@ public class DomainCrmV1Application {
         user.setRole("admin");
         user.setName("zabych");
 
-        System.out.println("ID " + userService.addNewUser(user));
+        System.out.println("ID " + userService.createNewUser(user));
     }
 
 }

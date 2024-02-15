@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.domaincrm_v1.dto.UserResponseDto;
 import project.domaincrm_v1.entity.User;
@@ -92,6 +93,16 @@ public class UserService {
         }
     }
 
+    public UserResponseDto createNewUser(User user) {
+        UserResponseDto userRespDto;
+        if (userRepository.findByEmail(user.getEmail()) == null) {
+            userRepository.save(user);
+           userRespDto = new UserResponseDto(user, "User successfully added to database", true);
+        } else {
+            userRespDto = new UserResponseDto(null, "User with this email already exists", false);
+        }
+        return userRespDto;
+    }
 
     public UserResponseDto login(String email, String password) {
         if (isPasswordCorrect(email, password)) {
