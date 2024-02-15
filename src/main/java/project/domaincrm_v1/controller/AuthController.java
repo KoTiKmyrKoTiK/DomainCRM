@@ -1,11 +1,14 @@
 package project.domaincrm_v1.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import project.domaincrm_v1.dto.LoginRequestDto;
-import project.domaincrm_v1.dto.UserResponseDto;
-import project.domaincrm_v1.entity.User;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import project.domaincrm_v1.dao.UserService;
+import project.domaincrm_v1.dto.LoginRequestDto;
+import project.domaincrm_v1.entity.User;
 
 @RestController
 @RequestMapping("/api")
@@ -15,11 +18,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody User user) {
-        userService.addNewUser(user);
-        var userRespDto = new UserResponseDto(user,   //TODO доп проверку на наичие юзера с таким же юзернеймом в базе
-                "User successfully added to database",
-                true);
-        return ResponseEntity.ok(userRespDto);
+            return ResponseEntity.ok(userService.createNewUser(user));
     }
 
     @PostMapping("/login")
