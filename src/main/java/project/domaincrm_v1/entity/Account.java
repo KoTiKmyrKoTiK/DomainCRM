@@ -31,15 +31,11 @@ public class Account {
     @Column(name = "creation_date")
     String creationDate;
 
-    @Column(name = "business_manager_id")
-    String businessManagerId;
-
-    @Column(name = "budiness_manager")
-    String business_manager ;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     User user;
 
-
+    @ManyToOne
+    @JoinColumn(name = "business_manager_id")
+    BusinessManager b_manager;
 }
