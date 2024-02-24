@@ -28,4 +28,4 @@ down:
 	docker-compose down postgres_db
 
 psql:
-	docker exec -it domain-crm--postgres psql -U ${PGUSER} -d ${PGDATABASE}
+	docker exec -it domain-crm--postgres psql -U ${POSTGRES_USER} -d ${POSTGRES_DB}
