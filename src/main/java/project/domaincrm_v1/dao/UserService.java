@@ -23,8 +23,12 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
+    DatasourceConfig datasourceProps;
+
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.datasourceProps = new DatasourceConfig();
     }
 
 
@@ -35,7 +39,7 @@ public class UserService {
 
 
     public User getUserInfo(String email) {
-        try (var conn = ConnectionUtils.connect()) {
+        try (var conn = ConnectionUtils.connect(datasourceProps)) {
             var statement = conn.prepareStatement(GET_USER_BY_ID);
             statement.setString(1, email);
             var rs = statement.executeQuery();
@@ -60,7 +64,7 @@ public class UserService {
     }
 
     public long addNewUser(User user) {
-        var conn = ConnectionUtils.connect();
+        var conn = ConnectionUtils.connect(datasourceProps);
         try {
             conn.setAutoCommit(false);
 
@@ -116,7 +120,7 @@ public class UserService {
 
     private boolean isPasswordCorrect(String email, String password) {
 
-        try (var conn = ConnectionUtils.connect()) {
+        try (var conn = ConnectionUtils.connect(datasourceProps)) {
             conn.setAutoCommit(false);
             var statement = conn.prepareStatement(COMPARE_PASSWORD_TO_EMAIL);
             statement.setString(1, email);
