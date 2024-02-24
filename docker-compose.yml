@@ -1,0 +1,49 @@
+version: "3.4"
+
+services:
+  webserver:
+    image: domain-crm--webserver
+    container_name: domain-crm--webserver
+    command: mvn compile exec:java -Dexec.mainClass="project.domaincrm_v1.DomainCrmV1Application"
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - "./pom.xml:/var/app/pom.xml"
+      - "./src:/var/app/src"
+    networks:
+      - domainCrm
+    environment:
+      POSTGRES_HOST:      ${POSTGRES_HOST}
+      POSTGRES_PORT:      ${POSTGRES_PORT}
+      POSTGRES_USER:      ${POSTGRES_USER}
+      POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD}
+      POSTGRES_DB:        ${POSTGRES_DB}
+
+      SPRING_DDL_AUTO:    ${SPRING_DDL_AUTO}
+      SPRING_SHOW_SQL:    ${SPRING_SHOW_SQL}
+
+      LOGGING_LEVEL:      ${LOGGING_LEVEL}
+      LOGGING_DESCRIPTOR: ${LOGGING_DESCRIPTOR}
+
+      ADMIN_EMAIL:    ${ADMIN_EMAIL}
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+  postgres_db:
+    image: postgres:15.4-bullseye
+    container_name: domain-crm--postgres
+    restart: always
+    volumes:
+      - "./pgdata:/data"
+    networks:
+      - domainCrm
+    environment:
+      POSTGRES_USER:             "${POSTGRES_USER}"
+      POSTGRES_PASSWORD:         "${POSTGRES_PASSWORD}"
+      POSTGRES_DB:               "${POSTGRES_DB}"
+      PGDATA:                    "/data"
+      POSTGRES_HOST_AUTH_METHOD: "md5"
+      POSTGRES_INITDB_ARGS:      "--auth-host=md5"
+
+networks:
+  domainCrm:
