@@ -8,6 +8,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile.dev
+    ports:
+      - "8078:8080"
     volumes:
       - "./pom.xml:/var/app/pom.xml"
       - "./src:/var/app/src"
