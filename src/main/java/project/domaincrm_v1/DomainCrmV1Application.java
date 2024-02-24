@@ -1,12 +1,14 @@
 package project.domaincrm_v1;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
 import project.domaincrm_v1.dao.UserService;
 import project.domaincrm_v1.entity.User;
 
 @SpringBootApplication
+@EnableConfigurationProperties
 public class DomainCrmV1Application {
     private static UserService userService;
 
