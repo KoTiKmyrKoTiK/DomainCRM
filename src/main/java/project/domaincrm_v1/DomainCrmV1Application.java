@@ -18,10 +18,14 @@ public class DomainCrmV1Application {
         SpringApplication.run(DomainCrmV1Application.class, args);
         var user = new User();
 
-        user.setEmail("test@gmail.com");
-        user.setPassword("23423423432423");
+        var userEmail = System.getenv("ADMIN_EMAIL") != null ? System.getenv("ADMIN_EMAIL") : "test@gmail.com";
+        var userPassword = System.getenv("ADMIN_PASSWORD") != null ? System.getenv("ADMIN_EMAIL") : "23423423432423";
+        var userName = System.getenv("ADMIN_USERNAME") != null ? System.getenv("ADMIN_EMAIL") : "zabych";
+
+        user.setEmail(userEmail);
+        user.setPassword(userPassword);
         user.setRole("admin");
-        user.setName("zabych");
+        user.setName(userName);
 
         System.out.println("ID " + userService.addNewUser(user));
     }

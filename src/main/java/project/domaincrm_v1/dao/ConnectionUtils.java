@@ -9,10 +9,12 @@ import java.sql.SQLException;
 
 @UtilityClass
 public class ConnectionUtils {
-
-    public Connection connect() {
+    public Connection connect(ConfigProperties properties) {
         try {
-            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "zabych", "1111");
+            var url = properties.gSpringDatasourceUrl();
+            var user = properties.gSpringDatasourceUsername();
+            var pass = properties.gSpringDatasourcePassword();
+            return DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
