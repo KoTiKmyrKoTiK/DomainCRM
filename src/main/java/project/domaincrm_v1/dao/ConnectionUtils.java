@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 @UtilityClass
 public class ConnectionUtils {
-    public Connection connect(ConfigProperties properties) {
+    public Connection connect(DatasourceConfig properties) {
         try {
             var url = properties.gSpringDatasourceUrl();
             var user = properties.gSpringDatasourceUsername();

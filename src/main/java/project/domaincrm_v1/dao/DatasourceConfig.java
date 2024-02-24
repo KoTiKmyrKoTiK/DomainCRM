@@ -3,7 +3,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConfigProperties {
+public class DatasourceConfig {
   @Value("${spring.datasource.url}")
   private String springDatasourceUrl;
 
