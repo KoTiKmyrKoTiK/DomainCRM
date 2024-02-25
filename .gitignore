@@ -1,3 +1,5 @@
 target/
 docker_target/
 pgdata/
+.clj-kondo/
+.lsp
