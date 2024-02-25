@@ -21,6 +21,12 @@ ADMIN_PASSWORD = admin
 run:
 	docker-compose up --build webserver
 
+run-fg:
+	docker-compose up --build -d webserver
+
+stop-fg:
+	docker-compose down webserver
+
 up:
 	docker-compose up -d postgres_db
 
