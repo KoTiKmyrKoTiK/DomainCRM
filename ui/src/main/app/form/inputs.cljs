@@ -12,7 +12,7 @@
             [app.form.mask :as m]
 
             [headlessui-reagent.core :as h-ui]
-            ["@heroicons/react/20/solid" :as heroicons])
+            ["@heroicons/react/24/solid" :as hi-solid])
   (:import [goog.async Debouncer]))
 
 (defn debounce
@@ -193,28 +193,37 @@
       (let [{:keys [value validators errors items] :as form-node} @!node
             disabled* (or disabled (:disabled form-node))
             display   (or (when display-fn (display-fn value))
-                          (some #(when (#{value} (:value %)) (:display %)) items)
+                          (->> items
+                               (filter (comp (partial = value) :value))
+                               first
+                               :display)
                           disabled*)
             label'    (or label (:label form-node))
 
             item-by-value (zipmap (map :value items) items)]
-        (when-not value (rf/dispatch [:zf/set-value form-path path (-> items first :value)]))
         [:div
          [h-ui/listbox
           {:value     value
            :on-change #(do (rf/dispatch [:zf/set-value form-path path %])
                            (when on-select (on-select % (get item-by-value %))))}
           (when (and label' (not no-label?))
-            [h-ui/listbox-label {:class "block text-sm font-medium leading-6 text-gray-900"}
+            [h-ui/listbox-label 
+             (cond-> {:class ["block" " text-sm" " font-medium" " leading-6" " text-gray-900"]}
+               (or (seq (select-keys validators [:required :pseudo])) (:required args))
+               (update :class conj :required))
              label'])
           [:div {:class "relative mt-2"}
            [h-ui/listbox-button
             {:class "relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 
                                   text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
                                   focus:outline-none focus:ring-2 focus:ring-brazz-600 sm:text-sm sm:leading-6"}
-            [:span {:class "block truncate"} display]
+            [:span
+             (cond-> {:class ["block" "truncate"]}
+               (nil? value)
+               (update :class conj "text-gray-400"))
+             display]
             [:span {:class "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"}
-             [:> heroicons/ChevronUpDownIcon {:class "h-5 w-5 text-gray-400"}]]]
+             [:> hi-solid/ChevronUpDownIcon {:class "h-5 w-5 text-gray-400"}]]]
 
            [h-ui/transition
             {:leave "transition ease-in duration-100"
@@ -241,10 +250,7 @@
                       (cond-> {:class (str/split "absolute inset-y-0 left-0 flex items-center pl-1.5" #" ")}
                         active       (update :class concat ["text-white"])
                         (not active) (update :class concat ["text-brazz-600"]))
-                      [:> heroicons/CheckIcon 
-                       {:class "w-5 h-5" :aria-hidden "true"}]])
-                   (when selected
-                     [:span.absolute.inset-y-0.left-0.flex.items-center.pl-3.text-amber-600
-                      ])])])]]]]
+                      [:> hi-solid/CheckIcon
+                       {:class "w-5 h-5" :aria-hidden "true"}]])])])]]]]
          (when (and (not disabled*) (or (seq errors) (:error args)))
            [:p.mt-2.text-sm.text-red-600 (str/join ", " (vals errors))])]))))

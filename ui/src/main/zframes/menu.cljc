@@ -5,7 +5,8 @@
 
             [common.utils :as cu]
 
-            ["@heroicons/react/20/solid" :as heroicons]))
+            ["@heroicons/react/24/solid"   :as hi-solid]
+            ["@heroicons/react/24/outline" :as hi-outline]))
 
 (defn to-query-params
   [params]
@@ -42,6 +43,8 @@
                                    "#"))))]
     (str url (when params (str "?" (to-query-params params))))))
 
+(def ^:private requests-category "Запросы")
+
 (def map-menus
   "A vector of all the pages that a present in the RMIS. In the nav-bar the items are shown in the same order as they written here, not in the pages-for-roles.
 
@@ -51,15 +54,34 @@
    
    The items can be linked. That way they are always shown together. The linked pages are grouped in the one subvector, and treated as one item."
 
-  [{:id "home"      :name "Dashboard"    :href (href "home")  :icon heroicons/HomeIcon}
-   {:id "users"     :name "Пользователи" :href (href "users") :icon heroicons/UserGroupIcon}])
+  [{:id   "home"
+    :name "Dashboard"
+    :href (href "home")
+    :icon hi-solid/HomeIcon}
+
+   {:id   "users"
+    :name "Пользователи"
+    :href (href "users")
+    :icon hi-solid/UserGroupIcon}
+
+   {:id   "domains"
+    :name "Домены"
+    :href (href "domains")
+    :icon hi-solid/GlobeAltIcon}
+
+   ;; Категория: Запросы
+   {:category requests-category
+    :id       "domains_requests"
+    :name     "Замена доменов"
+    :href     (href "domains" "requests")
+    :icon     hi-outline/GlobeAltIcon}])
 
 (def pages-for-roles
   "Для роли должны быть определены страницы, к которым у неё будет доступ.
    При этом отображение меню определяется по id из map-menus, а доступ к странице по первому параметру url.
    Т.е. в случае если id из map-menus не равен первому параметру href, то необходимо прописать оба параметра."
-  (->> {"admin"  #{"users"}
-        "buyer"  #{"home"}
+  (->> {"admin"  #{"users" "domains" "domains_requests"}
+        "buyer"  #{"domains"}
         "farmer" #{"home"}}))
 
 (defn get-main-subitem

@@ -18,6 +18,7 @@
             [app.login.view]
             [app.home.view]
             [app.users.view]
+            [app.domains.view]
 
             [common.routes]
 
@@ -127,7 +128,7 @@
 
       :component-did-catch
       (fn [_ _ _]
-        (rf/dispatch [:flash/danger {:msg [:div
+        (rf/dispatch [:flash/error {:msg [:div
                                            [:div "Произошла ошибка…"]]}]))
 
       :reagent-render

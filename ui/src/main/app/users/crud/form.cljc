@@ -10,7 +10,9 @@
   {:required {:message "Поле обязательно для заполнения"}})
 
 (def role-items
-  [{:value   "admin"
+  [{:value   nil
+    :display "- Не выбрано -"}
+   {:value   "admin"
     :display "Администратор"}
    {:value   "buyer"
     :display "Байер"}
@@ -19,7 +21,7 @@
 
 (def form-schema
   {:type   :form
-   :fields {:id          {:type       :integer}
+   :fields {:id          {:type       :string}
             :name        {:type       :string
                           :label      "Имя пользователя"
                           :validators required-validator}
@@ -58,8 +60,7 @@
         {:keys [errors value form]} (zf/eval-form form-data)]
     (merge
      {:db (assoc-in db form-path (assoc form :errors errors))}
-     (if (seq errors)
-       {:fx [#_[:dispatch [:close-loading]]]}
+     (when-not (seq errors)
        {:dispatch [(:event success)
                    (-> (:params success)
                        (assoc :data (merge

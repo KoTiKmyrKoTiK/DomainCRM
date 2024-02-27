@@ -46,7 +46,7 @@
    (let [id (-> db :fragment-params :id)
 
          form-value (-> payload :data :form-value)]
-     {:db (assoc-in db [pid/common :save-message] {:msg (if id "Пользователь успешно сохранен" "Пользователь успешно создан")})
+     {:db (assoc-in db [pid/common :save-message] (if id "Пользователь успешно сохранен" "Пользователь успешно создан"))
       :xhr/fetch {:uri     (cond-> "/api/users"
                              id (str "/" id))
                   :method  (if id :PUT :POST)
@@ -61,5 +61,5 @@
 (reg-event-fx
  ::save-success
  (fn [{db :db} [_ _]]
-   {:fx [[:dispatch [:flash/success (get-in db [pid/common :save-message] "Документ сохранен")]]
+   {:fx [[:dispatch [:flash/success {:header (get-in db [pid/common :save-message] "Документ сохранен")}]]
          [:dispatch [::h/redirect-to pid/search]]]}))

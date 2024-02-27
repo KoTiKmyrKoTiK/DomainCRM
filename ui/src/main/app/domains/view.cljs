@@ -1,4 +1,4 @@
-(ns app.users.view
+(ns app.domains.view
   (:require [re-frame.core :refer [dispatch]]
 
             [zenform.core :as zf]
@@ -8,23 +8,23 @@
 
             [app.components :as cmp]
 
-            [app.users.model      :as model]
-            [app.users.controller :as ctrl]
+            [app.domains.model      :as model]
+            [app.domains.controller :as ctrl]
 
-            [app.users.crud.view]
+            [app.domains.crud.view]
             
             ["@heroicons/react/24/solid" :as hi-solid]))
 
 (defn view
   [data _]
   [:<>
-   [cmp/title-divider "Пользователи"
+   [cmp/title-divider "Домены"
     [:a {:href (:create-href data)
          :class "inline-flex items-center gap-x-1.5 rounded-full bg-white px-3 py-1.5 text-sm 
                  font-semibold text-gray-900 shadow-sm 
                  ring-1 ring-inset ring-gray-300 hover:bg-gray-50"}
      [:> hi-solid/PlusIcon {:class "-ml-1 -mr-0.5 h-5 w-5 text-gray-400"}]
-     "Добавить пользователя"]]
+     "Добавить домен"]]
    [:ul.mt-10 {:role "list" :class "divide-y divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl"}
     (for [u (:items data)]
       ^{:key (:id u)}
@@ -43,4 +43,4 @@
            (:email u)]]]
         [:> hi-solid/ChevronRightIcon {:class "h-5 w-5 flex-none text-gray-400"}]]])]])
 
-(model/reg-users-page view)
+(model/reg-domains-page view)

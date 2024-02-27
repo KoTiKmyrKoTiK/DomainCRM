@@ -2,8 +2,8 @@
 
 (def search :app.users.controller/index)
 (def common :app.users.controller/common)
-(def create :app.users.controller/common)
-(def edit   :app.users.controller/common)
+(def create :app.users.controller/create)
+(def edit   :app.users.controller/edit)
 
 (def routes
   {"users"  {:.       search

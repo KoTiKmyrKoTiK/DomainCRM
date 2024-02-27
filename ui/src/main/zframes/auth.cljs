@@ -49,7 +49,8 @@
    (let [id (:u s)]
      {:xhr/fetch [{:uri     (str "/api/users/" id)
                    :req-id  ::userinfo
-                   :success {:event ::userinfo-success}}]})))
+                   :success {:event ::userinfo-success}
+                   :error   {:event ::logout}}]})))
 
 (rf/reg-event-fx
  ::userinfo-success
@@ -64,14 +65,16 @@
          user-id (:id user)
 
          hash-l  (-> js/window .-location .-hash)]
-     (cond-> {:fx [[:db (assoc db ::userinfo user)]
-                   [:route-map/start {}]
-                   [::r/set-query-string {:r role :u user-id}]]}
-       (nil? storage-role)
-       (update :fx conj [:storage/set {:r role}])
+     (if user
+       (cond-> {:fx [[:db (assoc db ::userinfo user)]
+                     [:route-map/start {}]
+                     [::r/set-query-string {:r role :u user-id}]]}
+         (nil? storage-role)
+         (update :fx conj [:storage/set {:r role}])
 
-       (str/blank? hash-l)
-       (update :fx conj [:dispatch [::resolve-page]])))))
+         (str/blank? hash-l)
+         (update :fx conj [:dispatch [::resolve-page]]))
+       {:dispatch [::logout]}))))
 
 (rf/reg-sub
  ::userinfo

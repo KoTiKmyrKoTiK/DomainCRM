@@ -10,7 +10,7 @@
      (defn window-open
        [url]
        (try (.-focus (.open js/window url "_blank"))
-            (catch js/Error e (rf/dispatch [:flash/danger {:msg "🠕  Разрешите всплывающие окна"}]))))
+            (catch js/Error e (rf/dispatch [:flash/error {:msg "🠕  Разрешите всплывающие окна"}]))))
 
      (defn page-redirect
        [url]

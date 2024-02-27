@@ -29,8 +29,7 @@
         {:keys [errors value form]} (zf/eval-form form-data)]
     (merge
      {:db (assoc-in db form-path (assoc form :errors errors))}
-     (if (seq errors)
-       {:fx [[:dispatch [:close-loading]]]}
+     (when-not (seq errors)
        {:dispatch [(:event success)
                    (-> (:params success)
                        (assoc :data (merge

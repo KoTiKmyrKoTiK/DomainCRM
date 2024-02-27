@@ -101,63 +101,9 @@
 (defn error-flash-view
   [pid base-url url resp x-correlation-id data]
   (when resp
-    (let [status      (.-status resp)
-          status-text (.-statusText resp)
-          errors      (->> data :issue
-                           (map (fn [err]
-                                  (->> [(:expression err) (:diagnostics err)]
-                                       (filter some?)
-                                       (str/join " - ")))))
-          err-text    (when (string? data)
-                        (subs data 0
-                              (if (> (count data) 1000)
-                                1000
-                                (count data))))]
-      [:flash/danger
-       {:msg
-        [:div
-         (cond
-           (some (comp #{"forbidden"} :code) (:issue data))
-           [:div "Ошибка: " [:b "403"] " Доступ запрещен."]
-
-           (:message data)
-           [:<>
-            [:div "Ошибка: " [:b status]]
-            [:div (:message data)]]
-
-           :else
-           [:<>
-            [:div "Ошибка: " [:b status] " " status-text]
-            (case status
-              400 [:div "Неверный запрос"]
-              403 [:div "Доступ запрещен"]
-              404 [:div "Неверный адрес запроса: " url]
-              408 [:div "Превышено время ожидания ответа"]
-              409 [:div "Конфликт с текущим состоянием сервера"]
-              422 [:div "Ошибка при обработке запроса"]
-              500 [:div "Внутренняя ошибка сервера"]
-              502 [:div "Не удалось установить соединение"]
-              [:div "Неопознанная ошибка"])])
-         (when (and (seq errors) (#{400 422} status))
-           (into [:ul]
-                 (for [e errors] [:li e])))
-         [:div
-          [:div.btn-sm.btn.mt-2.btn-outline-secondary.btn-block
-           {:title    "Отправить отчет об ошибке"
-            :on-click #(rf/dispatch
-                        [:xhr/error-report
-                         {:msg (str "------------------------------\n"
-                                    "<b>Error report:</b> Status " status "\n"
-                                    "<b>Instance:</b> " base-url "\n"
-                                    "<b>Screen:</b> " pid "\n"
-                                    "<b>Req url:</b> " url "\n"
-                                    "<b>Correlation-id:</b> " x-correlation-id "\n"
-                                    "<pre><code>"
-                                    (if data
-                                      (str/replace (.stringify js/JSON (clj->js data)) #"<" "меньше")
-                                      err-text)
-                                    "</code></pre>")}])}
-           "Сообщить об ошибке"]]]}])))
+    [:flash/error
+     {:header (str (:status data) " - " (:error data))
+      :body (:path data)}]))
 
 (defn get-response-body
   [resp]
@@ -230,8 +176,7 @@
                              (:params event)]))
 
                     (and (> status 299) (not (:flash-disabled opts)))
-                    (into [[:close-loading]
-                           (error-flash-view pid base-url' url resp x-correlation-id data)]))]
+                    (into [(error-flash-view pid base-url' url resp x-correlation-id data)]))]
               (->> dispatch-events
                    (map rf/dispatch)
                    (doall)))))
@@ -262,11 +207,11 @@
                     (conj [(:event error) (merge error {:request opts :error ex :data data :status status}) (:params error)]))
 
                   (= status 401)
-                  [[:flash/danger {:msg "Пользователь не авторизован"}]
+                  [[:flash/error {:header "Пользователь не авторизован"}]
                    [::auth/logout-done]]
 
                   (= (.-name ex) "TypeError")
-                  [[:flash/danger {:msg "Отсутствует интернет соединение"}]]
+                  [[:flash/error {:header "Отсутствует интернет соединение"}]]
 
                   (not= (.-name ex) "AbortError")
                   (cond-> [[:xhr/done {:request opts :data data :status status}]]
@@ -276,7 +221,7 @@
 
                     (:event error)
                     (conj [(:event error) {:request opts :error resp :data data :status status} (:params error)])))]
-            (->> (conj dispatch-events [:close-loading])
+            (->> dispatch-events
                  (map rf/dispatch)
                  (doall))))
         (catch :default err (prn "Unexpected error" err))))))

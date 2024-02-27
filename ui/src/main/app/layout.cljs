@@ -12,7 +12,7 @@
             [reagent.core :as r]
             [headlessui-reagent.core :as h-ui]
 
-            ["@heroicons/react/20/solid" :as heroicons]))
+            ["@heroicons/react/24/solid" :as hi-solid]))
 
 (def h-ui-transition-root (r/adapt-react-class h-ui-react/Transition.Root))
 
@@ -46,7 +46,16 @@
         !user-email (subscribe [:db/get [::auth/userinfo :email]])]
     (fn [& [{:keys [mobile?]}]]
       (let [{:keys [menu]} @!navigation
-            user-email     @!user-email]
+            user-email     @!user-email
+
+            main-menu
+            (remove :category menu)
+
+            menu-with-categories
+            (filter :category menu)
+
+            grouped-categories
+            (group-by :category menu-with-categories)]
         [:nav {:class "flex flex-1 flex-col"}
          [:ul {:role  "list"
                :class "flex flex-1 flex-col gap-y-7"}
@@ -55,7 +64,7 @@
                  :class "-mx-2 space-y-1"}
             [:<>
              (for
-              [i menu] ^{:key (str "mob-" (:id i))}
+              [i main-menu] ^{:key (str "mob-" (:id i))}
               [:li
                [:a
                 (cond-> {:href (:href i)
@@ -76,6 +85,36 @@
                    (not (:current? i))
                    (update :class concat ["text-gray-400" "group-hover:text-brazz-600"]))]
                 (:name i)]])]]]
+          (when (seq menu-with-categories)
+            [:<>
+             (for [[category category-menu] grouped-categories]
+               ^{:key category}
+               [:li
+                [:div {:class "text-xs font-semibold leading-6 text-gray-400"} category]
+                [:ul {:role  "list"
+                      :class "-mx-2 mt-2 space-y-1"}
+                 (for [i category-menu]
+                   ^{:key (str category "-" (:id i))}
+                   [:li
+                    [:a
+                     (cond-> {:href (:href i)
+                              :class (-> "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                         (str/split #" "))}
+                       (:current? i)
+                       (update :class concat ["bg-gray-50" "text-brazz-600"])
+
+                       (not (:current? i))
+                       (update :class concat ["text-gray-700" "hover:text-brazz-600" "hover:bg-gray-50"]))
+                     [:> (:icon i)
+                      (cond-> {:class (-> "h-6 w-6 shrink-0"
+                                          (str/split #" "))}
+
+                        (:current? i)
+                        (update :class concat ["text-brazz-600"])
+
+                        (not (:current? i))
+                        (update :class concat ["text-gray-400" "group-hover:text-brazz-600"]))]
+                     (:name i)]])]])])
           (when-not mobile?
             [:li
              [:div {:class "text-xs font-semibold leading-6 text-gray-400"} "Профиль"]
@@ -92,7 +131,7 @@
              [:a {:class "flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50"}
               [:div
                {:class "h-8 w-8 rounded-full bg-gray-50"}
-               [:> heroicons/UserIcon {:class "h-8 w-8"}]]
+               [:> hi-solid/UserIcon {:class "h-8 w-8"}]]
               [:span.sr-only "Your Profile"]
               [:span user-email]]])]]))))
 
@@ -144,7 +183,7 @@
                      :on-click #(reset! !sidebarOpen? false)}
                     [:span
                      {:class "sr-only"}]
-                    [:> heroicons/XMarkIcon
+                    [:> hi-solid/XMarkIcon
                      {:class "h-6 w-6 text-white"}]]]
                   [:div {:class "flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2"}
                    [:div {:class "flex h-16 shrink-0 items-center"}
@@ -163,7 +202,7 @@
               [:button {:class "-m-2.5 p-2.5 text-gray-700 lg:hidden"
                         :on-click #(reset! !sidebarOpen? true)}
                [:span.sr-only "Open sidebar"]
-               [:> heroicons/Bars3Icon {:class "h-6 w-6"}]]
+               [:> hi-solid/Bars3Icon {:class "h-6 w-6"}]]
               [:div {:class "flex-1 text-sm font-semibold leading-6 text-gray-900"}
                (cond-> "BrazzTeam CRM"
                  title
@@ -174,7 +213,7 @@
                [h-ui/menu-button
                 [:div
                  {:class "h-8 w-8 rounded-full bg-gray-50"}
-                 [:> heroicons/UserIcon {:class "h-8 w-8"}]]]
+                 [:> hi-solid/UserIcon {:class "h-8 w-8"}]]]
                [h-ui/transition
                 {:class      "absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                  :enter      "transition ease-out duration-100"

@@ -5,7 +5,7 @@
             [clojure.string :as str]
             [headlessui-reagent.core :as h-ui]
             
-            ["@heroicons/react/20/solid" :as heroicons]))
+            ["@heroicons/react/24/solid" :as hi-solid]))
 
 (defn gen-uuid
   []
@@ -100,7 +100,7 @@
     :h-c  "text-sm font-medium text-red-800"
     :b-c  "mt-1 text-sm text-red-700"
     :c-c  "inline-flex rounded-md bg-red-50 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50"
-    :icon [:> heroicons/XCircleIcon {:class "h-5 w-5 text-red-400"}]}])
+    :icon [:> hi-solid/XCircleIcon {:class "h-5 w-5 text-red-400"}]}])
 
 (defmethod flash-msg :success
   [id f]
@@ -109,7 +109,7 @@
     :h-c  "text-sm font-medium text-green-800"
     :b-c  "mt-1 text-sm text-green-700"
     :c-c  "inline-flex rounded-md bg-green-50 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
-    :icon [:> heroicons/CheckCircleIcon {:class "h-5 w-5 text-green-400"}]}])
+    :icon [:> hi-solid/CheckCircleIcon {:class "h-5 w-5 text-green-400"}]}])
 
 (defmethod flash-msg :info
   [id f]
@@ -118,7 +118,7 @@
     :h-c  "text-sm font-medium text-blue-800"
     :b-c  "mt-1 text-sm text-blue-700"
     :c-c  "inline-flex rounded-md bg-blue-50 text-blue-500 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-blue-50"
-    :icon [:> heroicons/InformationCircleIcon {:class "h-5 w-5 text-blue-400"}]}])
+    :icon [:> hi-solid/InformationCircleIcon {:class "h-5 w-5 text-blue-400"}]}])
 
 (defn flashes
   []
