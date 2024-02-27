@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
@@ -25,18 +26,13 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
 
     @Column(name = "role")
     private String role;
-
-    @OneToMany(mappedBy = "user")
-    private List<Domain> domains;
-
-    @OneToMany(mappedBy = "user")
-    private List<Account> accounts;
 
     public static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
