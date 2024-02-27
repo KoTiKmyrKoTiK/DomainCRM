@@ -1,0 +1,14 @@
+.calva
+.clj-kondo
+.lsp
+.cpcache
+.vscode
+public/js
+public/css
+node_modules
+target
+.shadow-cljs
+*.iml
+.nrepl-port
+.idea
+shadow-cljs-tailwind.iml

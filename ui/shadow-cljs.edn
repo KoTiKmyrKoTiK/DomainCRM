@@ -1,0 +1,15 @@
+{:deps     {:aliases [:cljs]}
+
+ :dev-http {8020 "public"}
+
+ :builds
+ {:app
+  {:target           :browser
+   :compiler-options {:infer-externs   true
+                      :warnings        {:redef         false
+                                        :fn-deprecated false}
+                      :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}}
+   :output-dir       "public/js"
+   :asset-path       "/js"
+   :modules          {:main {:init-fn  app.core/initialize!
+                             :preloads [re-frisk.preload]}}}}}

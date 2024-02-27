@@ -1,0 +1,9 @@
+{:path ["src"]
+ :deps {org.clojure/clojure                 {:mvn/version "1.11.1"}
+        org.clojure/clojurescript           {:mvn/version "1.10.520"}
+        chrono/chrono                       {:local/root "../src/chrono"}
+        unit-map/unit-map                   {:git/url "https://github.com/HealthSamurai/unit-map"
+                                             :sha     "38221564b953227e4cbbf12f94b8d6777e7e29a7"}
+        cljsjs/moment                       {:mvn/version "2.17.1-1"}
+        cljsjs/moment-timezone              {:mvn/version "0.5.11-1"}
+        clojure.java-time/clojure.java-time {:mvn/version "0.3.2"}}}

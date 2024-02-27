@@ -1,0 +1,87 @@
+<!doctype html>
+<html class="h-full bg-gray-50">
+  <head>
+    <title>BrazzTeam CRM</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <style>
+    
+      .indicator {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(3);
+      }
+      .indicator svg polyline {
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .indicator svg polyline#back {
+        stroke: rgba(133,133,133,0.2);
+      }
+      .indicator svg polyline#front {
+        --tw-bg-opacity: 1;
+        stroke: #FFC107;
+        stroke-dasharray: 12, 36;
+        stroke-dashoffset: 48;
+        animation: dash 1s linear infinite;
+      }
+      .cta {
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        color: #222;
+        font-weight: bold;
+      }
+      @-moz-keyframes dash {
+        62.5% {
+          opacity: 0;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @-webkit-keyframes dash {
+        62.5% {
+          opacity: 0;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @-o-keyframes dash {
+        62.5% {
+          opacity: 0;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes dash {
+        62.5% {
+          opacity: 0;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="h-full">
+    <div class="h-full" id="app">
+      <div class="indicator">
+        <svg width="16px" height="12px">
+            <polyline id="back" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+            <polyline id="front" points="1 6 4 6 6 11 10 1 12 6 15 6"></polyline>
+        </svg>
+    </div>  
+
+    </div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script src="js/main.js"></script>
+    <script src="http://localhost:8078/appsettings.js"></script>
+  </body>
+</html>
