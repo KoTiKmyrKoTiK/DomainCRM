@@ -33,7 +33,6 @@ public class UserService {
 
 
     String ADD_NEW_USER = "INSERT INTO users  (email, password, role, name) VALUES (?, ?, ?, ?)";
-    String COMPARE_PASSWORD_TO_EMAIL = "SELECT * FROM users WHERE email = ? AND password = ?";
     String GET_USER_BY_EMAIL = "SELECT * FROM users WHERE email = ?";
     String GET_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
 
@@ -106,24 +105,20 @@ public class UserService {
     }
 
     public UserResponseDto login(String email, String password) {
-        if (isPasswordCorrect(email, password)) {
-            return new UserResponseDto(userRepository.findByEmail(email), "Success Login", true);
-        } else if (!isPasswordCorrect(email, password)) {
+        var user = userRepository.findByEmail(email);
+        if (isPasswordCorrect(user, password)) {
+            return new UserResponseDto(user, "Success Login", true);
+        } else if (!isPasswordCorrect(user, password)) {
             return new UserResponseDto(null, "Неправильный пароль", false);
         } else {
             return new UserResponseDto(null, "Пользователь с таким e-mail не найден!", false);//TODO empty user returns, fix it
         }
     }
 
-    private boolean isPasswordCorrect(String email, String password) {
-        String encodedPassword = User.encoder.encode(password);
+    private boolean isPasswordCorrect(User user, String password) {
         try (var conn = ConnectionUtils.connect(datasourceProps)) {
-            conn.setAutoCommit(false);
-            var statement = conn.prepareStatement(COMPARE_PASSWORD_TO_EMAIL);
-            statement.setString(1, email);
-            statement.setString(2, encodedPassword);
-            var rs = statement.executeQuery();
-            return rs.next();
+            var storedPassword = user.getPassword();
+            return User.encoder.matches(password, storedPassword);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
