@@ -1,5 +1,8 @@
 package project.domaincrm_v1.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.Filters;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "domains")
+@Filters( {
+    @Filter(name="status", condition="status = :status"),
+})
 public class Domain extends BaseEntity {
     @Column(name = "domain")
     private String domain;
@@ -18,7 +24,7 @@ public class Domain extends BaseEntity {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "ip")
+    @Column(name = "server_ip")
     private String server_ip;
 
     @Column(name = "server_provider")
