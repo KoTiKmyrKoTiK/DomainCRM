@@ -1,7 +1,10 @@
 package project.domaincrm_v1;
 
+import java.io.Serializable;
 import java.util.UUID;
 
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.id.enhanced.SequenceStyleGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

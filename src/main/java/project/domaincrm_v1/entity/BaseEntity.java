@@ -17,7 +17,7 @@ import project.domaincrm_v1.utils.UUIDGenerator;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID, generator = "UUID")
     @GenericGenerator(name = "UUID", type = UUIDGenerator.class)
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
