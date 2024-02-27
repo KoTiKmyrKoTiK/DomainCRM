@@ -15,7 +15,7 @@ public class DomainServerProviderController {
     DomainServerProviderRepository domainServerProviderRepository;
 
     @GetMapping("/domain_server_providers/{id}")
-    public ResponseEntity<?> getDomainById(@PathVariable UUID id) {
+    public ResponseEntity<?> getDomainServerProviderById(@PathVariable UUID id) {
         var domain = domainServerProviderRepository.findById(id);
 
         if (domain == null) {
@@ -26,23 +26,23 @@ public class DomainServerProviderController {
     }
 
     @GetMapping("/domain_server_providers")
-    public ResponseEntity<?> getAllDomains() {
+    public ResponseEntity<?> getAllDomainServerProviders() {
         return ResponseEntity.ok(domainServerProviderRepository.findAll());
     }
 
     @PostMapping("/domain_server_providers")
-    public ResponseEntity<?> addNewDomain(@RequestBody DomainServerProvider domain_server_provider) {
+    public ResponseEntity<?> addNewDomainServerProvider(@RequestBody DomainServerProvider domain_server_provider) {
         return ResponseEntity.ok(domainServerProviderRepository.save(domain_server_provider));
     }
 
     @PutMapping("/domain_server_providers/{id}")
-    public ResponseEntity<?> UpdateDomain(@PathVariable UUID id, @RequestBody DomainServerProvider domain_server_provider) {
+    public ResponseEntity<?> UpdateDomainServerProvider(@PathVariable UUID id, @RequestBody DomainServerProvider domain_server_provider) {
         domain_server_provider.setId(id);
         return ResponseEntity.ok(domainServerProviderRepository.save(domain_server_provider));
     }
 
     @DeleteMapping("/domain_server_providers/{id}")
-    public ResponseEntity<?> deleteDomain(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteDomainServerProvider(@PathVariable UUID id) {
         domainServerProviderRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
