@@ -5,7 +5,7 @@ POSTGRES_USER     ?= suchimauz
 POSTGRES_DB       ?= testbox
 POSTGRES_PASSWORD ?= testbox
 
-SPRING_DDL_AUTO ?= create
+SPRING_DDL_AUTO ?= update
 SPRING_SHOW_SQL ?= true
 
 LOGGING_LEVEL      ?= DEBUG
