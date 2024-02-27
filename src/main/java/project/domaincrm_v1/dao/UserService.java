@@ -98,9 +98,9 @@ public class UserService {
         UserResponseDto userRespDto;
         if (userRepository.findByEmail(user.getEmail()) == null) {
             userRepository.save(user);
-           userRespDto = new UserResponseDto(user, "User successfully added to database", true);
+           userRespDto = new UserResponseDto(user, "Пользователь успешно добавлен", true);
         } else {
-            userRespDto = new UserResponseDto(null, "User with this email already exists", false);
+            userRespDto = new UserResponseDto(null, "Пользователь с таким e-mail уже создан", false);
         }
         return userRespDto;
     }
@@ -109,9 +109,9 @@ public class UserService {
         if (isPasswordCorrect(email, password)) {
             return new UserResponseDto(userRepository.findByEmail(email), "Success Login", true);
         } else if (!isPasswordCorrect(email, password)) {
-            return new UserResponseDto(new User(), "Incorrect password", false);
+            return new UserResponseDto(null, "Неправильный пароль", false);
         } else {
-            return new UserResponseDto(new User(), "User with this username does not exist!", false);//TODO empty user returns, fix it
+            return new UserResponseDto(null, "Пользователь с таким e-mail не найден!", false);//TODO empty user returns, fix it
         }
     }
 

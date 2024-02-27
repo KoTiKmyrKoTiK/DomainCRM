@@ -22,7 +22,13 @@ public class AccountController {
 
     @GetMapping("/fb_accounts/{id}")
     public ResponseEntity<?> getAccountById(@PathVariable UUID id) {
-        return ResponseEntity.ok(accountRepository.findById(id));
+        var fb_account = accountRepository.findById(id);
+
+        if (fb_account == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(fb_account);
     }
 
     @PostMapping("/fb_accounts")

@@ -21,8 +21,13 @@ public class UsersController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById(@PathVariable UUID id) {
-        return ResponseEntity.ok(userRepository.findById(id));
+        var user = userRepository.findById(id);
 
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/users")

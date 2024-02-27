@@ -16,7 +16,13 @@ public class DomainController {
 
     @GetMapping("/domains/{id}")
     public ResponseEntity<?> getDomainById(@PathVariable UUID id) {
-        return ResponseEntity.ok(domainRepository.findById(id));
+        var domain = domainRepository.findById(id);
+
+        if (domain == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(domain);
     }
 
     @GetMapping("/domains")
