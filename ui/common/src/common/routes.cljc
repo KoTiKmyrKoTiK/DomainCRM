@@ -1,29 +1,18 @@
-(ns common.routes)
-
-(def pid-login       :app.login.controller/login)
-(def pid-login-index :app.login.controller/login-index)
-
-(def pid-dashboard   :app.home.controller/dashboard)
-
-(def pid-users        :app.users.controller/index)
-(def pid-users-common :app.users.controller/common)
-(def pid-users-create :app.users.crud.controller/create)
-(def pid-users-edit   :app.users.crud.controller/edit)
+(ns common.routes
+  (:require 
+   [common.routes.login  :as pid-login]
+   [common.routes.common :as pid-common]
+   [common.routes.users  :as pid-users]))
 
 (def routes
-  {:.     pid-login-index
-   "login"  {:.       pid-login
-             :navbar? false
-             :title   "Авторизация"}
-   "logout" {:. :zframes.auth/logout}
-   "home"   {:.     pid-dashboard
-             :title "Dashboard"}
-   "users"  {:.       pid-users
-             :title   "Список пользователей"
-             "create" {:.     pid-users-create
-                       :title "Добавление нового пользователя"}
-             [:id]    {:.     pid-users-edit
-                       :title "Редактирование пользователя"}}})
+  (merge
+   pid-login/routes
+   pid-common/routes
+   pid-users/routes
+   {:.       pid-login/root
+    "logout" {:. :zframes.auth/logout}
+    "home"   {:.     pid-common/dashboard
+              :title "Dashboard"}}))
 
 (defn route-index*
   [route pth]

@@ -8,21 +8,21 @@
 
             [zframes.menu :as menu]
 
-            [common.routes :as cr]))
+            [common.routes.users :as pid]))
 
-(def reg-create-page (pages/reg-page-fn cr/pid-users-create))
-(def reg-edit-page   (pages/reg-page-fn cr/pid-users-edit))
+(def reg-create-page (pages/reg-page-fn pid/create))
+(def reg-edit-page   (pages/reg-page-fn pid/edit))
 
 (reg-sub
- cr/pid-users-create
+ pid/create
  :<- [:db/get [:route-map/current-route :title]]
  (fn [title _]
    {:type  :create
     :title title}))
 
 (reg-sub
- cr/pid-users-edit
- :<- [:xhr/response cr/pid-users-edit]
+ pid/edit
+ :<- [:xhr/response pid/edit]
  :<- [:db/get [:route-map/current-route :title]]
  (fn [[{:keys [data]} title] _]
    {:type  :edit

@@ -7,10 +7,10 @@
             [zframes.menu   :as menu]
             [zframes.routing]
             
-            [common.routes :as cr]))
+            [common.routes.login :as pid]))
 
 (reg-event-fx
- cr/pid-login-index
+ pid/root
  (fn [{db :db} [_ _ _]]
    (let [location (:location/search db)
          search-params* (select-keys location [:u :r])
@@ -22,7 +22,7 @@
      {:zframes.redirect/redirect {:uri (:href m)}})))
 
 (reg-event-fx
- cr/pid-login
+ pid/login
  (fn [{db :db} [pid phase _]]
    (cond-> {:fx [[:dispatch [::form/init {:email "" :password ""}]]]
             :db db}

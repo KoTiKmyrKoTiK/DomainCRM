@@ -6,10 +6,10 @@
             [app.helpers :as h]
             [app.pages :as pages]
             
-            [common.routes :as cr]))
+            [common.routes.login :as pid]))
 
-(def reg-login-page (pages/reg-page-fn cr/pid-login))
+(def reg-login-page (pages/reg-page-fn pid/login))
 
 (reg-sub
- cr/pid-login
+ pid/login
  (fn [db] {}))

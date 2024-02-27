@@ -7,10 +7,10 @@
 
             [app.users.crud.form :as form]
 
-            [common.routes :as cr]))
+            [common.routes.users :as pid]))
 
 (reg-event-fx
- cr/pid-users-create
+ pid/create
  (fn [_ [pid phase _]]
    (case phase
      :init   {:fx [[:dispatch [::form/init]]]}
@@ -18,7 +18,7 @@
      nil)))
 
 (reg-event-fx
- cr/pid-users-edit
+ pid/edit
  (fn [_ [pid phase {:keys [id]}]]
    (case phase
      :init   {:fx [[:xhr/fetch {:uri     (str "/api/users/" id)
@@ -46,7 +46,7 @@
    (let [id (-> db :fragment-params :id)
 
          form-value (-> payload :data :form-value)]
-     {:db (assoc-in db [cr/pid-users-common :save-message] {:msg (if id "Пользователь успешно сохранен" "Пользователь успешно создан")})
+     {:db (assoc-in db [pid/common :save-message] {:msg (if id "Пользователь успешно сохранен" "Пользователь успешно создан")})
       :xhr/fetch {:uri     (cond-> "/api/users"
                              id (str "/" id))
                   :method  (if id :PUT :POST)
@@ -61,5 +61,5 @@
 (reg-event-fx
  ::save-success
  (fn [{db :db} [_ _]]
-   {:fx [[:dispatch [:flash/success (get-in db [cr/pid-users-common :save-message] "Документ сохранен")]]
-         [:dispatch [::h/redirect-to cr/pid-users]]]}))
+   {:fx [[:dispatch [:flash/success (get-in db [pid/common :save-message] "Документ сохранен")]]
+         [:dispatch [::h/redirect-to pid/search]]]}))

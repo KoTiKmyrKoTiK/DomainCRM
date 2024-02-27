@@ -3,10 +3,10 @@
 
             [zframes.routing]
 
-            [common.routes :as cr]))
+            [common.routes.users :as pid]))
 
 (reg-event-fx
- cr/pid-users
+ pid/search
  (fn [{db :db} [pid phase fragment-params]]
    (case phase
      :init

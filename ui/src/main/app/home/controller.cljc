@@ -1,9 +1,9 @@
 (ns app.home.controller
   (:require [re-frame.core :refer [reg-event-fx]]
 
-            [common.routes :as cr]))
+            [common.routes.common :as pid]))
 
 (reg-event-fx
- cr/pid-dashboard
+ pid/dashboard
  (fn [_ _]
    {}))

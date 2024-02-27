@@ -8,9 +8,9 @@
 
             [zframes.menu :as menu]
 
-            [common.routes :as cr]))
+            [common.routes.users :as pid]))
 
-(def reg-users-page (pages/reg-page-fn cr/pid-users))
+(def reg-users-page (pages/reg-page-fn pid/search))
 
 (defn role-item
   [r class]

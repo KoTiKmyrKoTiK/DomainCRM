@@ -6,10 +6,10 @@
             [app.helpers :as h]
             [app.pages :as pages]
 
-            [common.routes :as cr]))
+            [common.routes.common :as pid]))
 
-(def reg-dashboard-page (pages/reg-page-fn cr/pid-dashboard))
+(def reg-dashboard-page (pages/reg-page-fn pid/dashboard))
 
 (reg-sub
- cr/pid-dashboard
+ pid/dashboard
  (fn [db] {}))
