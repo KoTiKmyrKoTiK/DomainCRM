@@ -1,5 +1,7 @@
 package project.domaincrm_v1.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +14,8 @@ public class DomainController {
     @Autowired
     DomainRepository domainRepository;
 
-
     @GetMapping("/domains/{id}")
-    public ResponseEntity<?> getDomainById(@PathVariable Long id) {
+    public ResponseEntity<?> getDomainById(@PathVariable UUID id) {
         return ResponseEntity.ok(domainRepository.findById(id));
     }
 
@@ -29,13 +30,13 @@ public class DomainController {
     }
 
     @PutMapping("/domains/{id}")
-    public ResponseEntity<?> UpdateDomain(@PathVariable Long id, @RequestBody Domain domain) {
+    public ResponseEntity<?> UpdateDomain(@PathVariable UUID id, @RequestBody Domain domain) {
         domain.setId(id);
         return ResponseEntity.ok(domainRepository.save(domain));
     }
 
     @DeleteMapping("/domains/{id}")
-    public ResponseEntity<?> deleteDomain(@PathVariable Long id) {
+    public ResponseEntity<?> deleteDomain(@PathVariable UUID id) {
         domainRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

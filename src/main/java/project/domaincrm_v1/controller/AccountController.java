@@ -1,5 +1,7 @@
 package project.domaincrm_v1.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class AccountController {
     }
 
     @GetMapping("/fb_accounts/{id}")
-    public ResponseEntity<?> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<?> getAccountById(@PathVariable UUID id) {
         return ResponseEntity.ok(accountRepository.findById(id));
     }
 
@@ -29,12 +31,12 @@ public class AccountController {
     }
 
     @PutMapping("/fb_accounts/{id}")
-    public ResponseEntity<?> UpdateAccount(@PathVariable Long id, @RequestBody Account account) {
+    public ResponseEntity<?> UpdateAccount(@PathVariable UUID id, @RequestBody Account account) {
         account.setId(id);
         return ResponseEntity.ok(accountRepository.save(account));
     }
     @DeleteMapping("/fb_accounts/{id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
+    public ResponseEntity<?> deleteAccount(@PathVariable UUID id) {
         accountRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

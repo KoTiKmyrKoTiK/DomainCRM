@@ -1,43 +1,46 @@
 package project.domaincrm_v1.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-
+import lombok.Setter;
 
 import java.util.List;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    long id;
+public class User extends BaseEntity {
     @Column(name = "name")
-    String name;
+    private String name;
+
     @Column(name = "email")
-    String email;
+    private String email;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
-    String password;
+    private String password;
+
     @Column(name = "role")
-    String role;
+    private String role;
 
     @OneToMany(mappedBy = "user")
-    List<Domain> domains;
+    private List<Domain> domains;
 
     @OneToMany(mappedBy = "user")
-    List<Account> accounts;
+    private List<Account> accounts;
 
+    public static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public User(long id, String name, String email, String password, String role, String domain) {
+    public void setPassword(String password) {
+        this.password = encoder.encode(password);
     }
 }

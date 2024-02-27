@@ -2,42 +2,38 @@ package project.domaincrm_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "domains")
 @Entity
-public class Domain {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    Long id;
-
-    @Column(name = "name")
-    String name;
-
-    @Column(name = "status")
-    String status;
+@Table(name = "domains")
+public class Domain extends BaseEntity {
+    @Column(name = "domain")
+    private String domain;
 
     @Column(name = "subdomain")
-    String subdomain;
+    private String subdomain;
+
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "ip")
-    String ip;
+    private String server_ip;
+
+    @Column(name = "server_provider")
+    private String server_provider;
+
+    @ManyToOne
+    @JoinColumn(name = "domain_server_provider_id")
+    private DomainProvider domain_server_provider;
+
+    @ManyToOne
+    @JoinColumn(name = "domain_provider_id")
+    private DomainProvider domain_provider;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    User user;
-
-    @Column(name = "registrator")
-    String registrator;
-
-    @Column(name = "creation_date")
-    String creationDate;
-    @Column(name = "archived_date")
-    String archivedDate;//TODO мб на стороне бекенда даты делать
+    private User user;
 }
 

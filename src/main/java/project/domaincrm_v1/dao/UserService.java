@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import project.domaincrm_v1.dto.UserResponseDto;
 import project.domaincrm_v1.entity.User;
@@ -13,6 +12,7 @@ import project.domaincrm_v1.repository.UserRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.UUID;
 
 
 @Slf4j
@@ -45,16 +45,13 @@ public class UserService {
             var rs = statement.executeQuery();
 
             if (rs.next()) {
-                return new User(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("role"),
-                        rs.getString("domain")
-
-
-                );
+                User user = new User();
+                user.setId(UUID.fromString(rs.getString("id")));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setName(rs.getString("name"));
+                user.setRole(rs.getString("role"));
+                return user;
             } else {
                 throw new RuntimeException("User not found");
             }
@@ -63,7 +60,7 @@ public class UserService {
         }
     }
 
-    public long addNewUser(User user) {
+    public UUID addNewUser(User user) {
         var conn = ConnectionUtils.connect(datasourceProps);
         try {
             conn.setAutoCommit(false);
@@ -83,7 +80,7 @@ public class UserService {
             try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
                     conn.commit();
-                    return generatedKeys.getLong(1);
+                    return UUID.fromString(generatedKeys.getString(1));
                 } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
@@ -119,20 +116,16 @@ public class UserService {
     }
 
     private boolean isPasswordCorrect(String email, String password) {
-
+        String encodedPassword = User.encoder.encode(password);
         try (var conn = ConnectionUtils.connect(datasourceProps)) {
             conn.setAutoCommit(false);
             var statement = conn.prepareStatement(COMPARE_PASSWORD_TO_EMAIL);
             statement.setString(1, email);
-            statement.setString(2, password);
+            statement.setString(2, encodedPassword);
             var rs = statement.executeQuery();
-            if (rs.next()) {
-                String storedPassword = rs.getString("password");
-                return storedPassword.equals(password);
-            }
+            return rs.next();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 }
