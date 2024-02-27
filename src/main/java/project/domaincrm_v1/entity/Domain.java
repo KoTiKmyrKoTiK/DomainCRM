@@ -1,5 +1,8 @@
 package project.domaincrm_v1.entity;
 
+import java.util.UUID;
+
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 
@@ -31,19 +34,25 @@ public class Domain extends BaseEntity {
     @Column(name = "server_ip")
     private String server_ip;
 
-    @Column(name = "server_provider")
-    private String server_provider;
+    @Column(name = "domain_server_provider_id")
+    private UUID domain_server_provider_id;
 
-    @ManyToOne
-    @JoinColumn(name = "domain_server_provider_id")
-    private DomainProvider domain_server_provider;
+    @Column(name = "domain_provider_id")
+    private UUID domain_provider_id;
 
-    @ManyToOne
-    @JoinColumn(name = "domain_provider_id")
+    @Column(name = "user_id")
+    private UUID user_id;
+
+    @ManyToOne()
+    @JoinColumn(name = "domain_server_provider_id", insertable=false, updatable=false)
+    private DomainServerProvider domain_server_provider;
+
+    @ManyToOne()
+    @JoinColumn(name = "domain_provider_id", insertable=false, updatable=false)
     private DomainProvider domain_provider;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne()
+    @JoinColumn(name = "user_id", insertable=false, updatable=false)
     private User user;
 }
 
