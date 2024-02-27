@@ -1,15 +1,17 @@
 (ns common.routes
   (:require 
-   [common.routes.login  :as pid-login]
-   [common.routes.common :as pid-common]
-   [common.routes.users  :as pid-users]))
+   [common.routes.login   :as pid-login]
+   [common.routes.common  :as pid-common]
+   [common.routes.users   :as pid-users]
+   [common.routes.domains :as pid-domains]))
 
 (def routes
   (merge
    pid-login/routes
    pid-common/routes
    pid-users/routes
-   {:.       pid-login/root
+   pid-domains/routes
+   {:.       :zframes.auth/resolve-page
     "logout" {:. :zframes.auth/logout}
     "home"   {:.     pid-common/dashboard
               :title "Dashboard"}}))

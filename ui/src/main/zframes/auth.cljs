@@ -1,9 +1,24 @@
 (ns zframes.auth
   (:require [re-frame.core  :as rf]
             [common.routes  :as routes]
+
+            [clojure.string :as str]
             
             [zframes.redirect :as r]
-            [zframes.menu     :as menu]))
+            [zframes.menu     :as menu]
+            [zframes.routing]))
+
+(rf/reg-event-fx
+ ::resolve-page
+ (fn [{db :db} _]
+   (let [location (:location/search db)
+         search-params* (select-keys location [:u :r])
+         {:keys [r]}  (zframes.routing/parse-search-params search-params*)
+
+         m (->> r
+                (menu/get-available-items _)
+                first)]
+     {:zframes.redirect/redirect {:uri (:href m)}})))
 
 (rf/reg-event-fx
  ::signin-success
@@ -42,17 +57,21 @@
   (rf/inject-cofx :window-location)]
  (fn [{{storage-role :role} :storage location :location db :db} [_ {user :data}]]
    (let [{:keys [r u]} (get-in location [:query-string])
-         role (cond-> r
-                (not= r (:role user))
-                ((constantly (:role user))))
-         
-         user-id (:id user)]
-     (cond-> {:db              (assoc db ::userinfo user)
-              :route-map/start {}
-              ::r/set-query-string {:r role :u user-id}}
+         role    (cond-> r
+                   (not= r (:role user))
+                   ((constantly (:role user))))
 
+         user-id (:id user)
+
+         hash-l  (-> js/window .-location .-hash)]
+     (cond-> {:fx [[:db (assoc db ::userinfo user)]
+                   [:route-map/start {}]
+                   [::r/set-query-string {:r role :u user-id}]]}
        (nil? storage-role)
-       (assoc :storage/set {:r role})))))
+       (update :fx conj [:storage/set {:r role}])
+
+       (str/blank? hash-l)
+       (update :fx conj [:dispatch [::resolve-page]])))))
 
 (rf/reg-sub
  ::userinfo
