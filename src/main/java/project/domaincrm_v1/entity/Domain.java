@@ -6,7 +6,11 @@ import org.hibernate.annotations.Filters;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity

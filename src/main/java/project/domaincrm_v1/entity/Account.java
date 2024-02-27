@@ -2,8 +2,12 @@ package project.domaincrm_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
