@@ -1,9 +1,12 @@
 (ns common.routes
-  (:require 
+  (:require
    [common.routes.login   :as pid-login]
    [common.routes.common  :as pid-common]
    [common.routes.users   :as pid-users]
-   [common.routes.domains :as pid-domains]))
+   [common.routes.domains :as pid-domains]
+
+   [common.routes.domain-providers        :as pid-domain-providers]
+   [common.routes.domain-server-providers :as pid-domain-server-providers]))
 
 (def routes
   (merge
@@ -11,6 +14,8 @@
    pid-common/routes
    pid-users/routes
    pid-domains/routes
+   pid-domain-providers/routes
+   pid-domain-server-providers/routes
    {:.       :zframes.auth/resolve-page
     "logout" {:. :zframes.auth/logout}
     "home"   {:.     pid-common/dashboard

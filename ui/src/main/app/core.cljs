@@ -19,6 +19,8 @@
             [app.home.view]
             [app.users.view]
             [app.domains.view]
+            [app.domain-providers.view]
+            [app.domain-server-providers.view]
 
             [common.routes]
 

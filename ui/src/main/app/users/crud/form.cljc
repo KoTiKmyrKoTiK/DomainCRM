@@ -14,6 +14,8 @@
     :display "- Не выбрано -"}
    {:value   "admin"
     :display "Администратор"}
+   {:value   "team_lead"
+    :display "Тимлид"}
    {:value   "buyer"
     :display "Байер"}
    {:value   "farmer"

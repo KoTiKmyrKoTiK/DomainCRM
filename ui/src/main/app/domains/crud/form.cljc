@@ -22,22 +22,32 @@
      :display "Используется"}
     {:value   "reserved"
      :display "Зарезервированный"}
-    {:value   "archived"
+    {:value   "restricted"
      :display "Забаненный"}
     {:value   "archived"
      :display "Архивный"}]))
+
+(def re-domain #"^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,3})$")
+(def re-subdomain #"^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]$")
+(def re-ip #"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$")
 
 (def form-schema
   {:type   :form
    :fields {:id                        {:type :string}
             :domain                    {:type       :string
                                         :label      "Домен"
-                                        :validators required-validator}
-            :subdomain                 {:type  :string
-                                        :label "Субдомен"}
+                                        :validators (assoc required-validator
+                                                           :pattern {:regex   re-domain
+                                                                     :message "Домен невалиден"})}
+            :subdomain                 {:type       :string
+                                        :label      "Субдомен"
+                                        :validators {:pattern {:regex   re-subdomain
+                                                               :message "Субдомен невалиден"}}}
             :server_ip                 {:type       :string
                                         :label      "IP сервера"
-                                        :validators required-validator}
+                                        :validators (assoc required-validator
+                                                           :pattern {:regex   re-ip
+                                                                     :message "IP невалиден"})}
             :domain_server_provider_id {:type       :string
                                         :label      "Провайдер сервера"
                                         :validators (assoc-in required-validator [:required :message]

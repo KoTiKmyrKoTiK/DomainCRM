@@ -44,6 +44,7 @@
     (str url (when params (str "?" (to-query-params params))))))
 
 (def ^:private requests-category "Запросы")
+(def ^:private domains-category "Домены")
 
 (def map-menus
   "A vector of all the pages that a present in the RMIS. In the nav-bar the items are shown in the same order as they written here, not in the pages-for-roles.
@@ -68,6 +69,18 @@
     :name "Домены"
     :href (href "domains")
     :icon hi-solid/GlobeAltIcon}
+   
+   ;; Категория: Домены
+   {:id       "domain_server_providers"
+    :name     "Провайдеры серверов"
+    :href     (href "domain_server_providers")
+    :icon     hi-outline/ServerStackIcon
+    :category domains-category}
+   {:id       "domain_providers"
+    :name     "Провайдеры доменов"
+    :href     (href "domain_providers")
+    :icon     hi-solid/WrenchScrewdriverIcon
+    :category domains-category}
 
    ;; Категория: Запросы
    {:category requests-category
@@ -80,9 +93,10 @@
   "Для роли должны быть определены страницы, к которым у неё будет доступ.
    При этом отображение меню определяется по id из map-menus, а доступ к странице по первому параметру url.
    Т.е. в случае если id из map-menus не равен первому параметру href, то необходимо прописать оба параметра."
-  (->> {"admin"  #{"users" "domains" "domains_requests"}
-        "buyer"  #{"domains"}
-        "farmer" #{"home"}}))
+  (->> {"admin"     #{"users" "domains" "domains_requests" "domain_server_providers" "domain_providers"}
+        "team_lead" #{"domains"}
+        "buyer"     #{}
+        "farmer"    #{"home"}}))
 
 (defn get-main-subitem
   [item]
