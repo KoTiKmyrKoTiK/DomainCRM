@@ -21,8 +21,8 @@ public class DomainCrmV1Application {
         var user = new User();
 
         var userEmail = System.getenv("ADMIN_EMAIL") != null ? System.getenv("ADMIN_EMAIL") : "test@gmail.com";
-        var userPassword = System.getenv("ADMIN_PASSWORD") != null ? System.getenv("ADMIN_EMAIL") : "23423423432423";
-        var userName = System.getenv("ADMIN_USERNAME") != null ? System.getenv("ADMIN_EMAIL") : "zabych";
+        var userPassword = System.getenv("ADMIN_PASSWORD") != null ? System.getenv("ADMIN_PASSWORD") : "23423423432423";
+        var userName = System.getenv("ADMIN_USERNAME") != null ? System.getenv("ADMIN_USERNAME") : "zabych";
 
         user.setEmail(userEmail);
         user.setPassword(userPassword);
