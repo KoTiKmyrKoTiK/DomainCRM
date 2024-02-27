@@ -34,8 +34,8 @@
             [role-item "-" ["text-green-700" "bg-gray-50" "ring-gray-600/20"]])})
 
 (reg-sub
- cr/pid-users
- :<- [:xhr/response cr/pid-users]
+ pid/search
+ :<- [:xhr/response pid/search]
  (fn [{data :data} _]
    {:items       (map format-item data)
     :create-href (menu/href "users" "create")}))
