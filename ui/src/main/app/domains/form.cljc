@@ -32,12 +32,12 @@
    :fields    {:group-by               {:type  :string
                                         :label "Группировка"
                                         :items group-items}
-               :user                   {:type :string
-                                        :label "Пользователь"}
-               :domain-provider        {:type :string
-                                        :label "Провайдер домена"}
-               :domain-server-provider {:type :string
-                                        :label "Провайдер сервера"}}})
+               :user                   {:type        :string
+                                        :label       "Пользователь"}
+               :domain-provider        {:type        :string
+                                        :label       "Провайдер домена"}
+               :domain-server-provider {:type        :string
+                                        :label       "Провайдер сервера"}}})
 
 (defn form-init [_ [_ init]]
   {:fx (cond-> [[:dispatch [:zf/init filter-path filter-schema init]]]

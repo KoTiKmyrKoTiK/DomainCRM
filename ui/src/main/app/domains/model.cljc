@@ -75,6 +75,30 @@
                       "restricted" [status-item (get status-map status) ["text-red-700" "bg-red-50" "ring-red-600/20"]]
                       nil)})
 
+(defn make-filters
+  [params]
+  (reduce-kv
+   (fn [acc k v]
+     (let [vals-set (-> (or v "")
+                        (str/split #",")
+                        set)
+
+           f (case k
+               :user
+               (comp vals-set :id :user)
+
+               :domain-provider
+               (comp vals-set :id :domain_provider)
+
+               :domain-server-provider
+               (comp vals-set :id :domain_server_provider)
+
+               nil)]
+       (cond-> acc
+         f (conj f))))
+   []
+   params))
+
 (reg-sub
  pid/search
  :<- [:xhr/response pid/search]
@@ -86,13 +110,19 @@
                       (let [k (:group-by params)
                             kw (keyword k)
                             v (kw item)]
-                        [:span 
-                         [:span.text-gray-500.font-normal (get group-by-map k) ": "] 
+                        [:span
+                         [:span.text-gray-500.font-normal (get group-by-map k) ": "]
                          [:span v]]))
-                    (constantly [:span.text-gray-500.font-normal "Без группировки"]))]
-     {:grouped-items (->> data
-                          (map format-item)
-                          (sort-by :domain)
-                          (group-by group-fn))
+                    (constantly [:span.text-gray-500.font-normal "Без группировки"]))
+         
+         filter-preds (make-filters params)]
+     {:grouped-items (cond-> data
+                       (seq filter-preds)
+                       (->> (filter (apply every-pred filter-preds)))
+
+                       :always
+                       (->> (map format-item)
+                            (sort-by :domain)
+                            (group-by group-fn)))
       :role          role
       :create-href   (menu/href "domains" "create")})))

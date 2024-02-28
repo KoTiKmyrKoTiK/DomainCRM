@@ -42,7 +42,7 @@
             {:class "group flex items-center font-medium text-gray-700"}
             [:> hi-solid/FunnelIcon {:class "mr-2 h-5 w-5 flex-none text-gray-400 group-hover:text-gray-500"}]
             "Фильтры"]]
-          [:div.pl-6
+          #_[:div.pl-6
            [:button.text-gray-500
             "Очистить всё"]]]]
         [:div {:class "col-start-1 row-start-1 py-4"}
@@ -50,15 +50,10 @@
           [f-inputs/dropdown form/filter-path [:group-by]]]]
         [h-ui/disclosure-panel
          {:class "py-10 border-t"}
-         [:div {:class "mx-auto grid max-w-7xl grid-cols-2 gap-x-4 px-4 text-sm sm:px-6 md:gap-x-6 lg:px-8"}
-          [:div {:class "grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6"}
-           [:fieldset
-            [:legeng "Пользователь"]
-            [:div {:class "space-y-6 pt-6 sm:space-y-4 sm:pt-4"}
-             [:div {:class "flex items-center text-base sm:text-sm"}
-              [:input
-               {:class "h-4 w-4 flex-shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                :type "checkbox"}]]]]]]]]]
+         [:div {:class "mx-auto grid max-w-7xl grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-5 px-4 text-sm sm:px-6 md:gap-x-6 lg:px-8"}
+          [f-inputs/checkbox-group form/filter-path [:user]]
+          [f-inputs/checkbox-group form/filter-path [:domain-provider]]
+          [f-inputs/checkbox-group form/filter-path [:domain-server-provider]]]]]]
       [:div {:class "bg-gray-100 ring-1 ring-gray-900/5"}
        [:div {:class "mx-auto max-w-7xl px-4 py-3 sm:flex sm:items-center"}
         [:div {:class "mt-2 sm:mt-0"}
@@ -76,8 +71,12 @@
         [:tr {:class "text-sm leading-6 text-gray-900 bg-gray-50"}
          [:td {:class "relative isolate py-2 font-semibold px-4"}
           [:div k]]
-         [:td]
-         [:td]]
+         [:td {:class "hidden sm:table-cell"}]
+         [:td
+          [:div.font-semibold.flex.justify-end.pr-4 
+           [:span
+            [:span.text-gray-500.font-normal "Всего: "]
+            (count items)]]]]
         (for [i items]
           ^{:key (str k "-" (:id i))}
           [:tr

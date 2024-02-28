@@ -76,6 +76,51 @@
                      (update :class concat ["bg-gray-100"]))
                    (:display i)])])]]]]]))))
 
+(defn checkbox-group
+  [form-path path & [args]]
+  (let [!node     (rf/subscribe [:zf/node form-path path])]
+    (fn [_ path & [{:keys [label on-select no-label? no-margin? disabled display-fn on-clear]}]]
+      (let [{:keys [value validators errors items] :as form-node} @!node
+            disabled* (or disabled (:disabled form-node))
+            label'    (or label (:label form-node))
+
+            values     (some-> value (str/split ","))
+            values-set (set values)
+
+            html-id-prefix (->> (map name path) (str/join "-"))]
+        [:div {:class "grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6"}
+         [:fieldset
+          [:legend label']
+          [:div {:class "space-y-3 pt-3"}
+           [:<>
+            (map-indexed
+             (fn [idx i]
+               [:div
+                {:key (:value i)
+                 :class "flex items-center text-base sm:text-sm"}
+                [:input
+                 {:class     "h-4 w-4 flex-shrink-0 rounded border-gray-300 text-brazz-600 focus:ring-brazz-500"
+                  :on-change (fn [ev]
+                               (.preventDefault ev)
+                               (rf/dispatch [:zf/set-value form-path path
+                                             (cond-> values
+                                               (-> i :value values-set)
+                                               (->> (remove #{(:value i)}))
+
+                                               (-> i :value values-set not)
+                                               (conj (:value i))
+                                               
+                                               :always
+                                               (->> (str/join ",")))]))
+                  :checked   (boolean (-> i :value values-set))
+                  :type      "checkbox"
+                  :id        (str html-id-prefix "-" idx)}]
+                [:label
+                 {:for   (str html-id-prefix "-" idx)
+                  :class "ml-3 min-w-0 flex-1 text-gray-600"}
+                 (:display i)]])
+             items)]]]]))))
+
 (defn chips-view
   [form-path & [{:keys [remove-chips-ev]}]]
   (letfn [(chips-data
@@ -90,12 +135,17 @@
                                     (-> v :value :display)
 
                                     :string
-                                    (if (:items v)
-                                      (->> (:items v)
-                                           (h/find-first #(= value (:value %)))
-                                           :display)
-                                      value)
-
+                                    (cond-> v
+                                      (:items v)
+                                      (some->
+                                       :value
+                                       (str/split #",")
+                                       (->> (map (fn [val]
+                                                   (->> (:items v)
+                                                        (h/find-first #(= val (:value %)))
+                                                        :display)))
+                                            (str/join ", "))))
+                                    
                                     :boolean
                                     (if v "Да" "Нет")
 
