@@ -19,7 +19,7 @@
             ["@heroicons/react/24/solid" :as hi-solid]))
 
 (defn view
-  [{:keys [grouped-items role create-href]} _]
+  [{:keys [grouped-items role create-href]} {:keys [params]}]
   [:<>
    [cmp/title-divider "Домены"
     [:a {:href create-href
@@ -62,17 +62,7 @@
       [:div {:class "bg-gray-100 ring-1 ring-gray-900/5"}
        [:div {:class "mx-auto max-w-7xl px-4 py-3 sm:flex sm:items-center"}
         [:div {:class "mt-2 sm:mt-0"}
-         [:div {:class "flex flex-wrap items-center"}
-          [:span {:class "m-1 inline-flex items-center rounded-full border border-gray-200 bg-white py-1.5 pl-3 pr-2 text-sm font-medium text-gray-900"}
-           [:span.text-xs [:span.text-gray-500 "Пользователь: "] [:span.font-medium "Долбаёб"]]
-           [:button {:class "ml-1 inline-flex h-4 w-4 flex-shrink-0 rounded-full p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-500"}
-            [:svg
-             {:class "h-2 w-2",
-              :stroke "currentColor",
-              :fill "none",
-              :viewBox "0 0 8 8"}
-             [:path
-              {:stroke-linecap "round", :strokeWidth "1.5", :d "M1 1l6 6m0-6L1 7"}]]]]]]]]])
+         [f-inputs/chips-view form/filter-path]]]]])
    [:table.mt-10 {:class "w-full text-left bg-white"}
     [:thead.sr-only
      [:tr
@@ -96,7 +86,9 @@
              [:div {:class "text-sm font-medium leading-6 text-gray-900"}
               (:domain i)]
              [:div {:class "block sm:hidden"}
-              [:div {:class "text-xs leading-6 text-gray-500"}
+              [:div {:class "text-xs leading-5 text-gray-500"}
+               "Сервер: " [:span.font-semibold (:server_provider i)]]
+              [:div {:class "text-xs leading-5 text-gray-500"}
                "Провайдер: " [:span.font-semibold (:provider i)]]
               [:div {:class "text-xs leading-5 text-gray-500"}
                "IP: " [:span.font-semibold (:ip i)]]]
@@ -106,7 +98,9 @@
               [:div {:class "text-xs leading-5 text-gray-500"}
                "Добавлен: " [:span.font-semibold (:created_at i)]]]]]
            [:td {:class "px-4 hidden py-5 pr-6 sm:table-cell"}
-            [:div {:class "text-sm leading-6 text-gray-900"}
+            [:div {:class "text-xs leading-5 text-gray-900"}
+             "Сервер: " [:span.font-semibold (:server_provider i)]]
+            [:div {:class "text-xs leading-5 text-gray-900"}
              "Провайдер: " [:span.font-semibold (:provider i)]]
             [:div {:class "text-xs leading-5 text-gray-500"}
              "IP: " [:span.font-semibold (:ip i)]]]

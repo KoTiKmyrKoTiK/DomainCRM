@@ -6,7 +6,12 @@
             [reagent.core    :as r]
             [re-frame.core   :as rf]
 
-            [app.form.inputs :as fi]
+            
+            [zenform.model :as zf]
+
+            [app.form.inputs  :as fi]
+            [app.form.helpers :as fh]
+            [app.helpers      :as h]
 
             [headlessui-reagent.core :as h-ui]
             ["@heroicons/react/24/solid" :as hi-solid])
@@ -70,3 +75,73 @@
                      active
                      (update :class concat ["bg-gray-100"]))
                    (:display i)])])]]]]]))))
+
+(defn chips-view
+  [form-path & [{:keys [remove-chips-ev]}]]
+  (letfn [(chips-data
+            [filters]
+            (->> filters
+                 (filter (fn [[k v]] (and (not (#{:search} k)) (zf/get-value v))))
+                 (map
+                  (fn [[k v]]
+                    (let [value   (:value v)
+                          display (case (or (:filter-type v) (:type v))
+                                    :object
+                                    (-> v :value :display)
+
+                                    :string
+                                    (if (:items v)
+                                      (->> (:items v)
+                                           (h/find-first #(= value (:value %)))
+                                           :display)
+                                      value)
+
+                                    :boolean
+                                    (if v "Да" "Нет")
+
+                                    :vector
+                                    (if (string? value)
+                                      (some-> value
+                                              (str/split ",")
+                                              (->> (map (fn [i]
+                                                          (->> v :items
+                                                               (h/find-first #(= i (get-in % [:value :id])))
+                                                               :value :display)))
+                                                   (str/join ", ")))
+                                      (->> value (map :display) (str/join ", ")))
+
+                                    value)]
+                      {:path     k
+                       :title    (:label v)
+                       :disabled (-> v :status :disabled)
+                       :remove   #(rf/dispatch [::fh/clear-filter-value form-path k v {:remove-chips-ev remove-chips-ev}])
+                       :display  display})))
+                 (remove #(not (string? (:display %))))))]
+    (let [filter-node (rf/subscribe [:zf/node form-path])
+          filters     (r/track #(:value @filter-node))]
+      (fn [_ & [{:keys [params]}]]
+        (let [filters (chips-data @filters)]
+          [:div {:class "flex flex-wrap items-center"}
+           [:<>
+            (if (seq filters)
+              (for [f filters]
+                ^{:key (:path f)}
+                [:span {:class "m-1 inline-flex items-center rounded-full border border-gray-200 bg-white py-1.5 pl-3 pr-2 text-sm font-medium text-gray-900"}
+                 [:span.text-xs
+                  [:span.text-gray-500 (str (:title f) ": ")]
+                  [:span.font-medium (:display f)]]
+                 (when-not (:disabled f)
+                   [:button
+                    {:title    "Убрать"
+                     :class    "ml-1 inline-flex h-4 w-4 flex-shrink-0 rounded-full p-1 text-gray-400 hover:bg-gray-200 hover:text-gray-500"
+                     :on-click (:remove f)}
+                    [:svg
+                     {:class   "h-2 w-2",
+                      :stroke  "currentColor",
+                      :fill    "none",
+                      :viewBox "0 0 8 8"}
+                     [:path
+                      {:stroke-linecap "round"
+                       :strokeWidth    "1.5"
+                       :d              "M1 1l6 6m0-6L1 7"}]]])])
+              [:span.text-gray-500.text-sm "Нет фильтров"])]])))))

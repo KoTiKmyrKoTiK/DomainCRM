@@ -256,3 +256,48 @@
                           value)]
             {:title    (:label v)
              :display  display})))))
+
+(rf/reg-event-db
+ ::clear-value
+ (fn [db [_ value-type form-path path]]
+   (cond-> db
+     (not (#{:period :date :time} value-type))
+     (update-in form-path (fn [form] (zf/set-value form form-path [path] nil))))))
+
+(rf/reg-event-fx
+ ::clear-filter-value
+ (fn [{db :db} [_ form-path' path node & [{:keys [remove-chips-ev]}]]]
+   (let [params   (->> (get-in db [:fragment-params :params])
+                       (reduce-kv (fn [acc k v]
+                                    (cond
+                                      (and (= :form (:type node))
+                                           (str/starts-with? (name k) (name path))
+                                           (some (fn [[subpath _]]
+                                                   (str/ends-with? (name k) (name subpath)))
+                                                 (:value node)))
+                                      (let [subnode (->> node :value
+                                                         (keep (fn [[subpath node]]
+                                                                 (when (str/ends-with? (name k) (name subpath))
+                                                                   node)))
+                                                         (first))]
+                                        (assoc acc k (:default subnode)))
+
+                                      (not (str/starts-with? (name k) (name path)))
+                                      (assoc acc k v)
+
+                                      :else
+                                      (assoc acc k (:default node))))
+                                  {})
+                       (h/strip-nils))]
+     {:fx (cond->
+           [[:dispatch [::clear-value
+                        (or (:filter-type node) (:type node))
+                        form-path'
+                        path]]
+            [:dispatch [:zframes.redirect/set-params params]]]
+
+            remove-chips-ev
+            (conj [:dispatch remove-chips-ev]))
+      :db (if (empty? params)
+            (update-in db form-path' dissoc :success)
+            db)})))

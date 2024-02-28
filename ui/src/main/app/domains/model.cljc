@@ -9,7 +9,8 @@
             [zframes.menu :as menu]
             [zframes.auth :as auth]
 
-            [app.domains.crud.form :as form]
+            [app.domains.crud.form :as crud-form]
+            [app.domains.form      :as form]
 
             [common.utils.date :as cud]
             [common.routes.domains :as pid]))
@@ -26,12 +27,21 @@
    r])
 
 (def status-map
-  (->> form/status-items
+  (->> crud-form/status-items
        (reduce
         (fn [acc {:keys [value display]}]
           (cond-> acc
             value
             (assoc value display)))
+        {})))
+
+(def group-by-map
+  (->> form/group-items
+       (reduce
+        (fn [acc {:keys [value label]}]
+          (cond-> acc
+            value
+            (assoc value label)))
         {})))
 
 (defn status-item
@@ -71,8 +81,15 @@
  :<- [::auth/userinfo]
  :<- [:route-map/fragment-params]
  (fn [[{data :data} {:keys [role]} {:keys [params]}] _]
-   (let [group-fn (or (some-> params :group-by keyword)
-                      (constantly "Без группировки"))]
+   (let [group-fn (if (:group-by params)
+                    (fn [item]
+                      (let [k (:group-by params)
+                            kw (keyword k)
+                            v (kw item)]
+                        [:span 
+                         [:span.text-gray-500.font-normal (get group-by-map k) ": "] 
+                         [:span v]]))
+                    (constantly [:span.text-gray-500.font-normal "Без группировки"]))]
      {:grouped-items (->> data
                           (map format-item)
                           (sort-by :domain)
