@@ -54,5 +54,9 @@ public class Domain extends BaseEntity {
     @ManyToOne()
     @JoinColumn(name = "user_id", insertable=false, updatable=false)
     private User user;
+
+    @OneToOne(mappedBy = "domain")
+    @JoinColumn(insertable=false, updatable=false)
+    private DomainRequest domain_request;
 }
 
