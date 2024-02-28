@@ -13,7 +13,7 @@
  pid/create
  (fn [_ [pid phase _]]
    (case phase
-     :init   {:fx [[:dispatch [::form/init]]]}
+     :init   {:fx [[:dispatch [::form/init {:status "active"}]]]}
      :deinit {:dispatch [:xhr/deinit-everything [pid]]}
      nil)))
 
@@ -32,6 +32,22 @@
  ::edit-page-init
  (fn [{db :db} [_ {:keys [data]}]]
    {:fx [[:dispatch [::form/init data]]]}))
+
+(reg-event-fx
+ ::update-user-status
+ (fn [{db :db} [_ user status]]
+   (let [userinfo (-> db :zframes.auth/userinfo)]
+     (if (and (= (:id user) (:id userinfo))
+              (#{"restricted"} status))
+       {:dispatch [:flash/error {:header "Вы не можете заблокировать себя!"}]}
+       {:db (assoc-in db [pid/common :save-message]
+                      (if (#{"restricted"} status)
+                        "Пользователь успешно заблокирован"
+                        "Пользователь успешно разблокирован"))
+        :xhr/fetch {:uri     (str "/api/users/" (:id user))
+                    :method  :PUT
+                    :body    (assoc user :status status)
+                    :success {:event ::save-success}}}))))
 
 (reg-event-fx
  ::save-flow
@@ -62,4 +78,4 @@
  ::save-success
  (fn [{db :db} [_ _]]
    {:fx [[:dispatch [:flash/success {:header (get-in db [pid/common :save-message] "Документ сохранен")}]]
-         [:dispatch [::h/redirect-to pid/search]]]}))
+         [:dispatch [:zframes.redirect/redirect {:uri "#/users"}]]]}))

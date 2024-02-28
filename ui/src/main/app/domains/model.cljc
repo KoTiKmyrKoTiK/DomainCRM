@@ -7,6 +7,7 @@
             [app.pages :as pages]
 
             [zframes.menu :as menu]
+            [zframes.auth :as auth]
 
             [app.domains.crud.form :as form]
 
@@ -67,8 +68,14 @@
 (reg-sub
  pid/search
  :<- [:xhr/response pid/search]
- (fn [{data :data} _]
-   {:items       (->> data 
-                      (map format-item)
-                      (group-by :server_provider))
-    :create-href (menu/href "domains" "create")}))
+ :<- [::auth/userinfo]
+ :<- [:route-map/fragment-params]
+ (fn [[{data :data} {:keys [role]} {:keys [params]}] _]
+   (let [group-fn (or (some-> params :group-by keyword)
+                      (constantly "Без группировки"))]
+     {:grouped-items (->> data
+                          (map format-item)
+                          (sort-by :domain)
+                          (group-by group-fn))
+      :role          role
+      :create-href   (menu/href "domains" "create")})))

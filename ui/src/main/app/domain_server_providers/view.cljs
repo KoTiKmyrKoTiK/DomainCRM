@@ -17,7 +17,7 @@
 
 (defn view
   [data _]
-  [:<>
+  [:div.mx-auto.max-w-3xl
    [cmp/title-divider "Провайдеры серверов доменов"
     [:a {:href (:create-href data)
          :class "inline-flex items-center gap-x-1.5 rounded-full bg-white px-3 py-1.5 text-sm 

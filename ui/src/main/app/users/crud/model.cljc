@@ -25,5 +25,6 @@
  :<- [:xhr/response pid/edit]
  :<- [:db/get [:route-map/current-route :title]]
  (fn [[{:keys [data]} title] _]
-   {:type  :edit
-    :title title}))
+   {:type     :edit
+    :title    title
+    :user     data}))

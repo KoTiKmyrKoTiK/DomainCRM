@@ -11,7 +11,7 @@
 
 (def default-items
   [{:value   nil
-    :display "- Не выбрано -"}])
+    :display "-Не выбрано-"}])
 
 (def status-items
   (concat

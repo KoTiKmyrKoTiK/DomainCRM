@@ -11,12 +11,12 @@
 
 (def role-items
   [{:value   nil
-    :display "- Не выбрано -"}
+    :display "-Не выбрано-"}
    {:value   "admin"
     :display "Администратор"}
    {:value   "team_lead"
     :display "Тимлид"}
-   {:value   "buyer"
+   #_{:value   "buyer"
     :display "Байер"}
    {:value   "farmer"
     :display "Фармер"}])
@@ -38,6 +38,7 @@
                           :label      "Повторите пароль"
                           :validators (merge required-validator
                                              {::re-password {:message "Пароль не совпадает"}})}
+            :status      {:type :string}
             :role        {:type       :string
                           :label      "Роль"
                           :validators (assoc-in required-validator [:required :message]

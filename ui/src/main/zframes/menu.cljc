@@ -98,6 +98,16 @@
         "buyer"     #{}
         "farmer"    #{"home"}}))
 
+(def forbidden-pages
+  {"team_lead" 
+   [#"^#/[^/]*/.*"]
+
+   "buyer"    
+   [#"^#/[^/]*/.*"]
+
+   "farmer"    
+   [#"^#/[^/]*/.*"]})
+
 (defn get-main-subitem
   [item]
   (if (vector? item)
@@ -140,8 +150,14 @@
   [{:keys [fragment] :as db} r]
   (let [fragment-tool   (fragment-first fragment)
         available-items (get-available-items db r)
-        default         (first available-items)]
-    (when-not (some (comp #{fragment-tool} :id) available-items)
+        default         (first available-items)
+        forbidden       (get forbidden-pages r)]
+    (cond
+      (some #(re-matches % (str fragment)) forbidden)
+      [[:flash/error {:header "Доступ запрещен"}]
+       [:zframes.redirect/redirect {:uri (:href default)}]]
+
+      (not (some (comp #{fragment-tool} :id) available-items))
       [[:zframes.redirect/redirect {:uri (:href default)}]])))
 
 (defn dispatch-redirect?

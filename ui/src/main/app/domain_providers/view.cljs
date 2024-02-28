@@ -17,7 +17,7 @@
 
 (defn view
   [data _]
-  [:<>
+  [:div.mx-auto.max-w-3xl
    [cmp/title-divider "Провайдеры доменов"
     [:a {:href (:create-href data)
          :class "inline-flex items-center gap-x-1.5 rounded-full bg-white px-3 py-1.5 text-sm 
@@ -35,6 +35,7 @@
          [:div {:class "min-w-0 flex-auto"}
           [:div {:class "flex items-start gap-x-3"}
            [:p {:class "text-sm font-semibold leading-6 text-gray-900"}
-            (:name dp)]]]]]])]])
+            (:name dp)]]]]
+        [:> hi-solid/ChevronRightIcon {:class "h-5 w-5 flex-none text-gray-400"}]]])]])
 
 (model/reg-domain-providers-page view)

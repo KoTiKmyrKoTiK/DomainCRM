@@ -11,7 +11,7 @@
 
 (defn view
   [data _]
-  [:<>
+  [:div.mx-auto.max-w-3xl
    [:div.hidden.lg:block
     [cmp/title-divider (:title data)]]
    [:form.lg:mt-10 {:class "bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"}

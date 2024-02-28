@@ -65,7 +65,15 @@
          user-id (:id user)
 
          hash-l  (-> js/window .-location .-hash)]
-     (if user
+     (cond
+       (-> user :status #{"restricted"})
+       {:fx [[:dispatch [:flash/error {:header "Вы заблокированы"}]]
+             [:dispatch [::logout]]]}
+
+       (not user)
+       {:dispatch [::logout]}
+
+       :else
        (cond-> {:fx [[:db (assoc db ::userinfo user)]
                      [:route-map/start {}]
                      [::r/set-query-string {:r role :u user-id}]]}
@@ -73,8 +81,7 @@
          (update :fx conj [:storage/set {:r role}])
 
          (str/blank? hash-l)
-         (update :fx conj [:dispatch [::resolve-page]]))
-       {:dispatch [::logout]}))))
+         (update :fx conj [:dispatch [::resolve-page]]))))))
 
 (rf/reg-sub
  ::userinfo

@@ -50,8 +50,8 @@
  pid/create
  (fn [_ [pid phase _]]
    (case phase
-     :init   {:fx [[:dispatch [::fetch-dropdown-items]]
-                   [:dispatch [::form/init]]]}
+     :init   {:fx [[:dispatch [::form/init]]
+                   [:dispatch [::fetch-dropdown-items]]]}
      :deinit {:dispatch [:xhr/deinit-everything [pid]]}
      nil)))
 
@@ -59,8 +59,7 @@
  pid/edit
  (fn [_ [pid phase {:keys [id]}]]
    (case phase
-     :init   {:fx [[:dispatch [::fetch-dropdown-items]]
-                   [:xhr/fetch {:uri     (str "/api/domains/" id)
+     :init   {:fx [[:xhr/fetch {:uri     (str "/api/domains/" id)
                                 :success {:event ::edit-page-init}
                                 :error   {:event ::h/errored}
                                 :req-id  pid}]]}
@@ -70,7 +69,8 @@
 (reg-event-fx
  ::edit-page-init
  (fn [{db :db} [_ {:keys [data]}]]
-   {:fx [[:dispatch [::form/init data]]]}))
+   {:fx [[:dispatch [::form/init data]]
+         [:dispatch [::fetch-dropdown-items]]]}))
 
 (reg-event-fx
  ::save-flow

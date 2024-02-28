@@ -17,7 +17,7 @@
 
 (defn view
   [data _]
-  [:<>
+  [:div.mx-auto.max-w-4xl
    [cmp/title-divider "Пользователи"
     [:a {:href (:create-href data)
          :class "inline-flex items-center gap-x-1.5 rounded-full bg-white px-3 py-1.5 text-sm 
@@ -38,7 +38,7 @@
           [:div {:class "flex items-start gap-x-3"}
            [:p {:class "text-sm font-semibold leading-6 text-gray-900"}
             (:name u)]
-           (:role u)]
+           (:badges u)]
           [:p {:class "mt-1 flex text-xs leading-5 text-gray-500"}
            (:email u)]]]
         [:> hi-solid/ChevronRightIcon {:class "h-5 w-5 flex-none text-gray-400"}]]])]])

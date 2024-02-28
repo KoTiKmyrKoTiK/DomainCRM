@@ -243,6 +243,5 @@
              navbar?
              (update :class conj :lg:pl-72))
            [:div {:class "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full"}
-            [:div {:class "mx-auto max-w-3xl"}
-             cnt]]]]
+            cnt]]]
          [zframes.flash/flashes]]))))

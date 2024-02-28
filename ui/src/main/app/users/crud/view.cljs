@@ -11,7 +11,7 @@
 
 (defn view
   [data _]
-  [:<>
+  [:div.mx-auto.max-w-3xl
    [:div.hidden.lg:block
     [cmp/title-divider (:title data)]]
    [:form.lg:mt-10 {:class "bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"}
@@ -27,15 +27,27 @@
        [inputs/text form/form-path [:password] {:input-type "password"}]]
       [:div.sm:col-span-3
        [inputs/text form/form-path [:re-password] {:input-type "password"}]]]]
-    [:div {:class "flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8"}
-     [:button
-      {:class "text-sm font-semibold leading-6 text-gray-900"
-       :on-click #(dispatch [:zframes.redirect/redirect {:uri "#/users"}])}
-      "Отмена"]
-     [:button
-      {:class "rounded-md bg-brazz-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brazz-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brazz-600"
-       :on-click #(dispatch [::ctrl/save-flow])}
-      "Сохранить"]]]])
+    [:div {:class "flex justify-between gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8"}
+     (when (and (-> data :type #{:edit})
+                (-> data :user :id some?))
+       (if-not (-> data :user :status #{"restricted"})
+         [:button
+          {:class "text-sm font-semibold leading-6 text-red-500"
+           :on-click #(dispatch [::ctrl/update-user-status (:user data) "restricted"])}
+          "Заблокировать"]
+         [:button
+          {:class "text-sm font-semibold leading-6 text-green-500"
+           :on-click #(dispatch [::ctrl/update-user-status (:user data) "active"])}
+          "Разблокировать"]))
+     [:div {:class "flex items-center justify-end gap-x-6"}
+      [:button
+       {:class "text-sm font-semibold leading-6 text-gray-900"
+        :on-click #(dispatch [:zframes.redirect/redirect {:uri "#/users"}])}
+       "Отмена"]
+      [:button
+       {:class "rounded-md bg-brazz-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brazz-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brazz-600"
+        :on-click #(dispatch [::ctrl/save-flow])}
+       "Сохранить"]]]]])
 
 (model/reg-create-page view)
 (model/reg-edit-page view)
