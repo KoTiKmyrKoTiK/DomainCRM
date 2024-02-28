@@ -23,7 +23,7 @@ public class UsersController {
     public ResponseEntity<?> getUserById(@PathVariable UUID id) {
         var user = userRepository.findById(id);
 
-        if (user == null) {
+        if (!user.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -37,7 +37,17 @@ public class UsersController {
 
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User user) {
+        var userRep = userRepository.findById(id);
+
+        if (!userRep.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
         user.setId(id);
+        if (user.getPassword() == null) {
+            user.setEncodedPassword(userRep.get().getPassword());
+        }
+
         return ResponseEntity.ok(userRepository.save(user));
     }
 

@@ -47,6 +47,7 @@ public class DomainCrmV1Application {
         user.setPassword(userPassword);
         user.setRole("admin");
         user.setName(userName);
+        user.setStatus("active");
 
         System.out.println("ID " + userRepository.save(user));
     }

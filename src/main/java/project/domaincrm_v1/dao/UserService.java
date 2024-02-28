@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
-
 @Slf4j
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Service
@@ -31,11 +30,9 @@ public class UserService {
         this.datasourceProps = new DatasourceConfig();
     }
 
-
     String ADD_NEW_USER = "INSERT INTO users  (email, password, role, name) VALUES (?, ?, ?, ?)";
     String GET_USER_BY_EMAIL = "SELECT * FROM users WHERE email = ?";
     String GET_USER_BY_ID = "SELECT * FROM users WHERE id = ?";
-
 
     public User getUserInfo(String email) {
         try (var conn = ConnectionUtils.connect(datasourceProps)) {
@@ -97,7 +94,7 @@ public class UserService {
         UserResponseDto userRespDto;
         if (userRepository.findByEmail(user.getEmail()) == null) {
             userRepository.save(user);
-           userRespDto = new UserResponseDto(user, "Пользователь успешно добавлен", true);
+            userRespDto = new UserResponseDto(user, "Пользователь успешно добавлен", true);
         } else {
             userRespDto = new UserResponseDto(null, "Пользователь с таким e-mail уже создан", false);
         }
@@ -105,14 +102,22 @@ public class UserService {
     }
 
     public UserResponseDto login(String email, String password) {
-        var user = userRepository.findByEmail(email);
-        if (isPasswordCorrect(user, password)) {
-            return new UserResponseDto(user, "Success Login", true);
+        var userRep = userRepository.findByEmail(email);
+        User user;
+
+        if (userRep.isPresent()) {
+            user = userRep.get();
+        } else {
+            return new UserResponseDto(null, "Пользователь с таким e-mail не найден", false);
+        }
+
+        if (user.isRestricted()) {
+            return new UserResponseDto(null, "Пользователь заблокирован", false);
         } else if (!isPasswordCorrect(user, password)) {
             return new UserResponseDto(null, "Неправильный пароль", false);
-        } else {
-            return new UserResponseDto(null, "Пользователь с таким e-mail не найден!", false);//TODO empty user returns, fix it
         }
+
+        return new UserResponseDto(user, "Success Login", true);
     }
 
     private boolean isPasswordCorrect(User user, String password) {

@@ -6,11 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Getter
@@ -26,7 +23,6 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
@@ -34,9 +30,20 @@ public class User extends BaseEntity {
     @Column(name = "role")
     private String role;
 
+    @Column(name = "status")
+    private String status;
+
     public static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public void setPassword(String password) {
         this.password = encoder.encode(password);
+    }
+
+    public void setEncodedPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
+    public boolean isRestricted() {
+        return this.getStatus().equals("restricted");
     }
 }
